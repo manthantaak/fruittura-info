@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Asus/OneDrive/Desktop/fruittura-infowebsite-build/components/scroll-to-top.tsx"],"sourcesContent":["\"use client\"\n\nimport { usePathname } from \"next/navigation\"\nimport { useEffect } from \"react\"\n\nexport function ScrollToTop() {\n  const pathname = usePathname()\n\n  useEffect(() => {\n    window.scrollTo(0, 0)\n  }, [pathname])\n\n  return null\n}\n"],"names":[],"mappings":";;;;AAEA;AACA;;AAHA;;;AAKO,SAAS;;IACd,MAAM,WAAW,IAAA,oJAAW;IAE5B,IAAA,0KAAS;iCAAC;YACR,OAAO,QAAQ,CAAC,GAAG;QACrB;gCAAG;QAAC;KAAS;IAEb,OAAO;AACT;GARgB;;QACG,oJAAW;;;KADd"}}]
-}
