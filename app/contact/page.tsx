@@ -18,16 +18,38 @@ export default function ContactPage() {
     message: "",
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const message = `*New Contact Form Submission*%0A%0A*Name:* ${formData.name}%0A*Email:* ${formData.email}%0A*Phone:* ${formData.phone}%0A*Company:* ${formData.company}%0A*Subject:* ${formData.subject}%0A%0A*Message:*%0A${formData.message}`
-    window.open(`https://wa.me/918446896952?text=${message}`, "_blank")
-    setIsSubmitted(true)
+    setError(null)
+    setIsLoading(true)
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data?.error || `Request failed with status ${res.status}`)
+      }
+
+      setIsSubmitted(true)
+      setFormData({ name: "", email: "", phone: "", company: "", subject: "", message: "" })
+    } catch (err: any) {
+      setError(err?.message || "Something went wrong. Please try again later.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const contactInfo = [
@@ -40,8 +62,8 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: "Email",
-      value: "info@fruittura.com",
-      link: "mailto:info@fruittura.com",
+      value: "info@fruittura.in",
+      link: "mailto:info@fruittura.in",
     },
     {
       icon: MapPin,
@@ -158,8 +180,7 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleChange}
                         className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm md:text-base"
-                        placeholder="John Doe"
-                      />
+                                           />
                     </div>
                     <div>
                       <label
@@ -176,7 +197,7 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleChange}
                         className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm md:text-base"
-                        placeholder="john@example.com"
+                        
                       />
                     </div>
                   </div>
@@ -195,7 +216,7 @@ export default function ContactPage() {
                         value={formData.phone}
                         onChange={handleChange}
                         className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm md:text-base"
-                        placeholder="+91 98765 43210"
+                        
                       />
                     </div>
                     <div>
